@@ -2,7 +2,9 @@
   "name": "vespez",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://api.anthropic.com",
   "dependencies": {
+    "@formspree/react": "^3.0.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
