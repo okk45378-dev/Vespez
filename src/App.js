@@ -735,8 +735,19 @@ if (window.location.pathname === "/privacy") return <Privacy />;
               ))}
             </div>
           )}
-        </div>
+             </div>
       )}
+
+      {/* Footer */}
+      <div style={{
+        borderTop: "1px solid #E2E8F0", padding: "24px",
+        textAlign: "center"
+      }}>
+        <a href="/privacy" style={{
+          fontSize: 12, color: "#94A3B8",
+          textDecoration: "none", fontFamily: "'Inter', sans-serif"
+        }}>Privacy Policy</a>
+      </div>
     </div>
   );
 }
