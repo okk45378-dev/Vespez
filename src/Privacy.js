@@ -15,7 +15,7 @@ export default function Privacy() {
 
       <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0F172A", marginBottom: 8 }}>Who we are</h2>
       <p style={{ marginBottom: 24 }}>
-        Vespez is a security and compliance scanner for web applications, built and operated by an individual founder. You can reach us at <a href="mailto:hello@vespez.com" style={{ color: "#2563EB" }}>hello@vespez.com</a>.
+        Vespez is a security and compliance scanner for web applications, built and operated by an individual founder. You can reach us at <a href="mailto:supportvespez@gmail.com" style={{ color: "#2563EB" }}>supportvespez@gmail.com</a>.
       </p>
 
       <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0F172A", marginBottom: 8 }}>What we collect</h2>
@@ -40,7 +40,7 @@ export default function Privacy() {
 
       <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0F172A", marginBottom: 8 }}>Your rights</h2>
       <p style={{ marginBottom: 24 }}>
-        You have the right to access, correct, or delete your data at any time. To do so, email us at <a href="mailto:hello@vespez.com" style={{ color: "#2563EB" }}>hello@vespez.com</a> and we will respond within 30 days.
+        You have the right to access, correct, or delete your data at any time. To do so, email us at <a href="mailto:supportvespez@gmail.com" style={{ color: "#2563EB" }}>supportvespez@gmail.com</a> and we will respond within 30 days.
       </p>
 
       <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0F172A", marginBottom: 8 }}>Cookies</h2>
