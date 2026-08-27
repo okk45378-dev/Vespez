@@ -2,7 +2,7 @@
   "functions": {
     "api/scan.js": {
       "runtime": "@vercel/node@3.2.0",
-      "maxDuration": 30
+      "maxDuration": 60
     }
   }
 }

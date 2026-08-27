@@ -44,11 +44,11 @@ export default async function handler(req, res) {
 URL: ${url}
 
 MAIN PAGE HTML:
-${html.substring(0, 15000)}
+${html.substring(0, 5000)}
 
-PRIVACY POLICY PAGE: ${privacy ? "FOUND - " + privacy.substring(0, 3000) : "NOT FOUND"}
-TERMS PAGE: ${terms ? "FOUND - " + terms.substring(0, 2000) : "NOT FOUND"}
-COOKIE POLICY: ${cookies ? "FOUND - " + cookies.substring(0, 2000) : "NOT FOUND"}
+PRIVACY POLICY PAGE: ${privacy ? "FOUND - " + privacy.substring(0, 1500) : "NOT FOUND"}
+TERMS PAGE: ${terms ? "FOUND - " + terms.substring(0, 1000) : "NOT FOUND"}
+COOKIE POLICY: ${cookies ? "FOUND - " + cookies.substring(0, 1000) : "NOT FOUND"}
 
 Only flag issues you can see evidence of in the HTML above. If policy pages exist, mark them as passed.
 
