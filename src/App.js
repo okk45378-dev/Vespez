@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useForm, ValidationError } from '@formspree/react';
+import Privacy from "./Privacy";
+import { useForm, ValidationError } from '@formspree/react';
 
 const SCANNER_CHECKS = [
   "Fetching page source...",
@@ -205,7 +207,7 @@ export default function Scanner() {
 
   const handleKeyDown = (e) => { if (e.key === "Enter") handleScan(); };
   const handleReset = () => { setPhase("landing"); setResults(null); setUrl(""); setError(null); };
-
+if (window.location.pathname === "/privacy") return <Privacy />;
   return (
     <div style={{ minHeight: "100vh", background: "#FAFBFC", fontFamily: "'Inter', sans-serif" }}>
       <style>{`
