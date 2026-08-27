@@ -113,10 +113,11 @@ function FindingCard({ finding }) {
 }
 
 function PassedItem({ text }) {
+  const displayText = typeof text === "string" ? text : text?.title || text?.description || JSON.stringify(text);
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0" }}>
       <span style={{ color: "#059669", fontSize: 16, flexShrink: 0 }}>✓</span>
-      <span style={{ fontSize: 14, color: "#334155", fontFamily: "'Inter', sans-serif" }}>{text}</span>
+      <span style={{ fontSize: 14, color: "#334155", fontFamily: "'Inter', sans-serif" }}>{displayText}</span>
     </div>
   );
 }
