@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useForm, ValidationError } from '@formspree/react';
 import Privacy from "./Privacy";
-import { useForm, ValidationError } from '@formspree/react';
 
 const SCANNER_CHECKS = [
   "Fetching page source...",
