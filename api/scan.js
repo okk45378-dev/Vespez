@@ -1,18 +1,15 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
-
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: "URL required" });
 
   try {
-    // Fetch the actual page
     const pageRes = await fetch(url, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; VespezScanner/1.0)" },
       signal: AbortSignal.timeout(10000)
     });
     const html = await pageRes.text();
 
-    // Also try to fetch policy pages
     const tryFetch = async (path) => {
       try {
         const r = await fetch(new URL(path, url).href, {
@@ -29,7 +26,6 @@ export default async function handler(req, res) {
       tryFetch("/cookies").then(r => r || tryFetch("/cookie-policy"))
     ]);
 
-    // Send to Claude for analysis
     const claudeRes = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -40,35 +36,56 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
         max_tokens: 4096,
-        system: `You are a web security and GDPR compliance auditor. Analyze the provided HTML source code. Only report issues you can directly observe in the code. Never guess. Return ONLY valid JSON.`,
+        system: "You are a web security auditor. You MUST respond with ONLY valid JSON, no markdown, no explanation. Start your response with { and end with }.",
         messages: [{
           role: "user",
-          content: `Analyze this website: ${url}
+          content: `Analyze this website's actual HTML for security and GDPR issues.
 
-MAIN PAGE HTML (first 15000 chars):
+URL: ${url}
+
+MAIN PAGE HTML:
 ${html.substring(0, 15000)}
 
-PRIVACY POLICY: ${privacy ? privacy.substring(0, 5000) : "NOT FOUND"}
-TERMS OF SERVICE: ${terms ? terms.substring(0, 3000) : "NOT FOUND"}
-COOKIE POLICY: ${cookies ? cookies.substring(0, 3000) : "NOT FOUND"}
+PRIVACY POLICY PAGE: ${privacy ? "FOUND - " + privacy.substring(0, 3000) : "NOT FOUND"}
+TERMS PAGE: ${terms ? "FOUND - " + terms.substring(0, 2000) : "NOT FOUND"}
+COOKIE POLICY: ${cookies ? "FOUND - " + cookies.substring(0, 2000) : "NOT FOUND"}
 
-Based on the ACTUAL HTML above, check for:
-SECURITY: Exposed API keys, hardcoded secrets, insecure patterns
-GDPR: Missing privacy policy, missing cookie consent, analytics without consent, forms without disclosure
+Only flag issues you can see evidence of in the HTML above. If policy pages exist, mark them as passed.
 
-Only flag issues you can see in the code above. If privacy/terms pages exist, note that they passed.
-
-Return ONLY this JSON:
-{"site_name":"string","site_description":"one sentence","confidence":"high|medium|low","confidence_reason":"string","security_score":0-100,"compliance_score":0-100,"findings":[{"severity":"critical|warning|info","category":"security|gdpr","title":"short","description":"specific evidence from the code","fix":"how to fix"}],"passed":["verified good things"]}`
+Respond with ONLY this JSON structure:
+{"site_name":"name","site_description":"one sentence","confidence":"high","security_score":50,"compliance_score":50,"findings":[],"passed":[]}`
         }]
       })
     });
 
     const data = await claudeRes.json();
+    
+    if (data.error) {
+      return res.status(500).json({ error: "Claude API error: " + JSON.stringify(data.error) });
+    }
+
     const text = data.content?.map(b => b.text || "").join("") || "";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error("No JSON in response");
-    const result = JSON.parse(jsonMatch[0]);
+    
+    if (!text) {
+      return res.status(500).json({ error: "Empty response from Claude", debug: JSON.stringify(data).substring(0, 500) });
+    }
+
+    // Try to find JSON
+    let cleaned = text.replace(/```json\s*/g, "").replace(/```\s*/g, "").trim();
+    const braceStart = cleaned.indexOf("{");
+    const braceEnd = cleaned.lastIndexOf("}");
+    
+    if (braceStart === -1 || braceEnd === -1) {
+      return res.status(500).json({ error: "No JSON in response", debug: text.substring(0, 500) });
+    }
+
+    const jsonStr = cleaned.substring(braceStart, braceEnd + 1);
+    let result;
+    try {
+      result = JSON.parse(jsonStr);
+    } catch (e) {
+      return res.status(500).json({ error: "Invalid JSON", debug: jsonStr.substring(0, 500) });
+    }
 
     res.status(200).json(result);
   } catch (err) {
